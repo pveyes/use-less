@@ -1,0 +1,65 @@
+{
+  "name": "@pveyes/use-less",
+  "version": "0.0.0",
+  "repository": "git@github.com:pveyes/use-less.git",
+  "main": "dist/index.js",
+  "umd:main": "dist/use-less.umd.production.js",
+  "module": "dist/use-less.esm.production.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test --env=jsdom",
+    "prepare-release": "standard-version -a",
+    "checksize": "bundlesize"
+  },
+  "peerDependencies": {
+    "react": ">=16"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "devDependencies": {
+    "@types/jest": "^24",
+    "@types/react": "^16",
+    "@types/react-dom": "^16",
+    "bundlesize": "^0.18",
+    "husky": "^3",
+    "prettier": "^1",
+    "pretty-quick": "^1",
+    "react": "^16",
+    "react-dom": "^16",
+    "standard-version": "^7",
+    "tsdx": "^0.7",
+    "tslib": "^1",
+    "typescript": "^3"
+  },
+  "bundlesize": [
+    {
+      "path": "./dist/use-less.cjs.production.min.js",
+      "maxSize": "2 kB"
+    }
+  ],
+  "jest": {
+    "transform": {
+      ".(js|ts|tsx)": "ts-jest/dist"
+    },
+    "testMatch": [
+      "<rootDir>/**/*.(spec|test).{js,ts,tsx}"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.{js,ts,tsx}"
+    ]
+  }
+}
