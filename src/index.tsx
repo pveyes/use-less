@@ -19,10 +19,11 @@ export function useProps<P>(initialProps: P | (() => P)) {
 
 export function useDerivedStateFromProps<P, S>(
   props: P,
-  mapStateToProps: (props: P) => S
+  mapPropsToState: (props: P) => S
 ): S {
   enforceRuleOfHooks('useProps');
-  return mapStateToProps(props);
+
+  return mapPropsToState(props);
 }
 
 export function useRenderProps<P>(
@@ -35,7 +36,9 @@ export function useRenderProps<P>(
   }, Object.values(props));
 }
 
+const GlobalContextProvider = React.createContext(globalThis);
 export function useGlobalContext(): typeof globalThis {
-  enforceRuleOfHooks('useGlobalContext');
-  return globalThis;
+  React.useDebugValue('useGlobalContext');
+
+  return React.useContext(GlobalContextProvider);
 }
