@@ -28,6 +28,18 @@ function Component(props) {
 }
 ```
 
+In cases where your props is computationally expensive, you can use lazy initializer, similar to how it works in `useState`
+
+```jsx
+import { useProps } from '@pveyes/use-less';
+
+function Component(expensiveProps) {
+  const props = useProps(() => expensiveProps);
+  // you can finally use the actual component props
+  return <div {...actualProps} />;
+}
+```
+
 ### `useDerivedStateFromProps`
 
 Moving to React hooks means you lose one of the most powerful React API: `getDerivedStateFromProps` or `gDSFP` for short. Don't be afraid, we bring it back in `use-less` using `useDerivedStateFromProps` or `uDSFP` for short.
