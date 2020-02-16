@@ -42,3 +42,38 @@ export function useGlobalContext(): typeof globalThis {
 
   return React.useContext(GlobalContextProvider);
 }
+
+type ReactClassInstance<S> = {
+  state: S;
+  setState: (newState: Partial<S>) => void;
+};
+
+export function useConstructor<S>(
+  constructorFn: (this: ReactClassInstance<S>) => void
+): ReactClassInstance<S> {
+  React.useDebugValue('useConstructor');
+
+  const [state, setState] = React.useState({} as S);
+  const [isConstructed, setConstructed] = React.useState(false);
+  const classInstance = new Proxy(
+    {},
+    {
+      set: (_obj: any, prop: string, value: any) => {
+        if (prop === 'state') {
+          setState(value as S);
+        }
+        return true;
+      },
+    }
+  );
+
+  if (!isConstructed) {
+    constructorFn.call(classInstance);
+    setConstructed(true);
+  }
+
+  return {
+    state,
+    setState: newState => setState(state => Object.assign({}, state, newState)),
+  };
+}
