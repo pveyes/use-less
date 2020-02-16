@@ -48,7 +48,7 @@ type ReactClassInstance<S> = {
   setState: (newState: Partial<S>) => void;
 };
 
-export function useConstructor<S>(
+export function useConstructor<S = any>(
   constructorFn: (this: ReactClassInstance<S>) => void
 ): ReactClassInstance<S> {
   React.useDebugValue('useConstructor');
