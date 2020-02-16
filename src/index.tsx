@@ -58,9 +58,9 @@ export function useConstructor<S = any>(
   const classInstance = new Proxy(
     {},
     {
-      set: (_obj: any, prop: string, value: any) => {
+      set: (_obj: any, prop: string, value: S) => {
         if (prop === 'state') {
-          setState(value as S);
+          setState(value);
         }
         return true;
       },
