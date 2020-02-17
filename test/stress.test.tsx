@@ -1,10 +1,12 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { render, fireEvent } from '@testing-library/react';
 import {
   useProps,
   useDerivedStateFromProps,
   useRenderProps,
   useGlobalContext,
+  useConstructor,
 } from '../src';
 
 describe('useProps', () => {
@@ -78,5 +80,39 @@ describe('useGlobalContext', () => {
     const div = document.createElement('div');
     ReactDOM.render(<Component />, div);
     ReactDOM.unmountComponentAtNode(div);
+  });
+});
+
+describe('useConstructor', () => {
+  it('simulate class constructor for setting initial state', async () => {
+    const Component = () => {
+      type State = {
+        text: string;
+      };
+
+      const thіs = useConstructor<State>(function constructor() {
+        this.state = {
+          text: '',
+        };
+      });
+
+      return (
+        <>
+          <label htmlFor="text">text</label>
+          <input
+            id="text"
+            value={thіs.state.text}
+            onChange={e => {
+              thіs.setState({ text: e.target.value });
+            }}
+          />
+        </>
+      );
+    };
+
+    const { getByLabelText } = render(<Component />);
+    const input = getByLabelText('text') as HTMLInputElement;
+    fireEvent.change(input, { target: { value: 'It works!' } });
+    expect(input.value).toEqual('It works!');
   });
 });

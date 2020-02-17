@@ -6,6 +6,7 @@ import {
   useDerivedStateFromProps,
   useRenderProps,
   useGlobalContext,
+  useConstructor,
 } from '../.';
 
 type Props = {
@@ -18,6 +19,11 @@ const App = (appProps: Props) => {
   }));
   const renderProps = useRenderProps(state);
   const { console: sys } = useGlobalContext();
+  const thіs = useConstructor<{ text: string }>(function constructor() {
+    this.state = {
+      text: '',
+    };
+  });
 
   sys.log('It works!');
   return (
@@ -25,6 +31,10 @@ const App = (appProps: Props) => {
       {renderProps(props => (
         <div>
           <main id={props.id} />
+          <input
+            value={thіs.state.text}
+            onChange={e => thіs.setState({ text: e.target.value })}
+          />
         </div>
       ))}
     </React.StrictMode>

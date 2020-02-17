@@ -40,6 +40,35 @@ function Component(expensiveProps) {
 }
 ```
 
+### `useConstructor`
+
+If you don't like the way React uses [tuple](https://en.wikipedia.org/wiki/Tuple) for its state hooks and you feel like setting state on constructor is the way to go, you can use `useConstructor` hooks to do that.
+
+```jsx
+import { useConstructor } from '@pveyes/use-less';
+
+function Component() {
+  // If you're feeling nostalgic, you can use Cyrillic character
+  // to name your variable `thіs` without v8 yelling at you
+  const thіs = useConstructor(function constructor() {
+    this.state = {
+      text: string;
+    }
+  });
+
+  // It feels so good to use this.state & this.setState
+  // RIGHT? RIGHT???
+  return (
+    <input
+      value={thіs.state.text}
+      onChange={e => thіs.setState({ text: '' })}
+    />
+  );
+}
+```
+
+**Yes, you need to use normal function, not arrow function.**
+
 ### `useDerivedStateFromProps`
 
 Moving to React hooks means you lose one of the most powerful React API: `getDerivedStateFromProps` or `gDSFP` for short. Don't be afraid, we bring it back in `use-less` using `useDerivedStateFromProps` or `uDSFP` for short.
