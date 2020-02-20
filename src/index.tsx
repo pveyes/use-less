@@ -77,3 +77,17 @@ export function useConstructor<S = any>(
     setState: newState => setState(state => Object.assign({}, state, newState)),
   };
 }
+
+export function useHOC<T>(
+  HOC: (Component: React.ComponentType<T>) => React.ElementType
+): (FunctionComponent: React.FunctionComponent<T>) => JSX.Element {
+  React.useDebugValue('useHOC');
+
+  return React.useCallback(
+    (FunctionComponent: React.FunctionComponent<T>) => {
+      const Component = HOC(FunctionComponent);
+      return <Component />;
+    },
+    [HOC]
+  );
+}

@@ -7,6 +7,7 @@ import {
   useRenderProps,
   useGlobalContext,
   useConstructor,
+  useHOC,
 } from '../src';
 
 describe('useProps', () => {
@@ -114,5 +115,29 @@ describe('useConstructor', () => {
     const input = getByLabelText('text') as HTMLInputElement;
     fireEvent.change(input, { target: { value: 'It works!' } });
     expect(input.value).toEqual('It works!');
+  });
+});
+
+describe('useHOC', () => {
+  it('wraps inner component with a HoC', () => {
+    type Props = {};
+    type HOCProps = {
+      colorScheme: 'dark' | 'white';
+    };
+
+    function withDarkMode(Component: React.ComponentType<Props & HOCProps>) {
+      return function ComponentWithDarkMode(props: Props) {
+        return <Component {...props} colorScheme="dark" />;
+      };
+    }
+
+    function Component() {
+      const renderHOC = useHOC(withDarkMode);
+      return renderHOC(props => <span>{props.colorScheme}</span>);
+    }
+
+    const { container } = render(<Component />);
+    const span = container.getElementsByTagName('span')[0];
+    expect(span.textContent).toEqual('dark');
   });
 });
