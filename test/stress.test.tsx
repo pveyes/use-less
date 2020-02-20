@@ -122,7 +122,7 @@ describe('useHOC', () => {
   it('wraps inner component with a HoC', () => {
     type Props = {};
     type HOCProps = {
-      colorScheme: 'dark' | 'white';
+      colorScheme: 'dark' | 'light';
     };
 
     function withDarkMode(Component: React.ComponentType<Props & HOCProps>) {
