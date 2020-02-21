@@ -7,11 +7,45 @@ import {
   useRenderProps,
   useGlobalContext,
   useConstructor,
+  useHOC,
 } from '../.';
 
 type Props = {
   id: string;
 };
+
+type DarkModeProps = {
+  colorScheme: 'dark' | 'light';
+};
+
+function withDarkMode(Component: React.ComponentType<DarkModeProps>) {
+  return class DarkMode extends React.Component<any, DarkModeProps> {
+    private media: MediaQueryList;
+
+    state = {
+      colorScheme: 'light' as const,
+    };
+
+    componentDidMount() {
+      this.media = window.matchMedia('(prefers-color-scheme: dark)');
+      this.setState({ colorScheme: this.media.matches ? 'dark' : 'light' });
+      this.media.addEventListener('change', this.handleMediaChange);
+    }
+
+    componentWillUnmount() {
+      this.media.removeEventListener('change', this.handleMediaChange);
+    }
+
+    handleMediaChange = (ev: MediaQueryListEvent) => {
+      this.setState({ colorScheme: ev.matches ? 'dark' : 'light' });
+    };
+
+    render() {
+      return <Component {...this.props} colorScheme={this.state.colorScheme} />;
+    }
+  };
+}
+
 const App = (appProps: Props) => {
   const realProps = useProps(appProps);
   const state = useDerivedStateFromProps(realProps, props => ({
@@ -24,6 +58,7 @@ const App = (appProps: Props) => {
       text: '',
     };
   });
+  const renderHOC = useHOC(withDarkMode);
 
   sys.log('It works!');
   return (
@@ -35,6 +70,9 @@ const App = (appProps: Props) => {
             value={thіs.state.text}
             onChange={e => thіs.setState({ text: e.target.value })}
           />
+          {renderHOC(props => (
+            <span>{`You're using ${props.colorScheme} color scheme`}</span>
+          ))}
         </div>
       ))}
     </React.StrictMode>
