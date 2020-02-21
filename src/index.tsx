@@ -79,7 +79,7 @@ export function useConstructor<S = any>(
 }
 
 export function useHOC<T>(
-  HOC: (Component: React.ComponentType<T>) => React.ElementType
+  HOC: (Component: React.ComponentType<T>) => React.ComponentType
 ): (FunctionComponent: React.FunctionComponent<T>) => JSX.Element {
   React.useDebugValue('useHOC');
 
