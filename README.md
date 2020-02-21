@@ -103,6 +103,22 @@ function Component(props) {
 }
 ```
 
+### `useHOC`
+
+Another thing that's missing since hooks era is Higher Order Component. One that was praised for being powerful is now starting to be abandoned. Fortunately, you can still use HOCs using `useHOC` hooks (no pun intended).
+
+```jsx
+import { useHOC } from '@pveyes/use-less';
+import withLegacy from './hoc';
+
+function Component(props) {
+  const renderHOC = useHOC(withLegacy);
+  return renderHOC(hocProps => <div {...props} {...hocProps} />);
+}
+```
+
+This is even better than just using HOC, there's no more props naming conflict! This is the power of composition between hooks, HOC and render props!
+
 ### `useGlobalContext`
 
 The main issue with React Context is you can only get value that the Provider gives you, or its default value. What if you want to access global value? With the rise of SSR, you need to be sure you call correct global `console` in both server and browser. With `useGlobalContext` you can access all global variable that exists in both environment.
