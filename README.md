@@ -151,7 +151,7 @@ function Component(props) {
 
 - **Is this a joke?**
 
-  What do you think?
+  See [this video](https://www.youtube.com/watch?v=dQw4w9WgXcQ) for a more detailed explanation about the package.
 
 ## License
 
