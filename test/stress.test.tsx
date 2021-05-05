@@ -1,5 +1,5 @@
+import '@testing-library/jest-dom';
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import { render, fireEvent } from '@testing-library/react';
 import {
   useProps,
@@ -12,75 +12,95 @@ import {
 
 describe('useProps', () => {
   it('renders without crashing', () => {
-    const Component = (props: { defaultValue: string }) => {
-      const realProps = useProps(props);
+    const Component = (props: React.PropsWithChildren<{}>) => {
+      const actualProps = useProps(props);
 
-      return <input {...realProps} />;
+      return <div {...actualProps} />;
     };
 
-    const div = document.createElement('div');
-    ReactDOM.render(<Component defaultValue="X" />, div);
-    ReactDOM.unmountComponentAtNode(div);
+    const { getByText } = render(
+      <Component>
+        <strong>It works!</strong>
+      </Component>
+    );
+    expect(getByText('It works!')).toBeInTheDocument();
   });
 
   it('allow for lazy initializer', () => {
-    const Component = (props: { defaultValue: string }) => {
+    const Component = (props: { text: string }) => {
       const realProps = useProps(() => props);
 
-      return <input {...realProps} />;
+      return <h1>{realProps.text}</h1>;
     };
 
-    const div = document.createElement('div');
-    ReactDOM.render(<Component defaultValue="X" />, div);
-    ReactDOM.unmountComponentAtNode(div);
+    const { getByText } = render(<Component text="Hello, world!" />);
+    expect(getByText('Hello, world!')).toBeInTheDocument();
   });
 });
 
-describe('uDSFP', () => {
-  it('renders without crashing', () => {
-    const Component = (props: { value: string }) => {
+describe('useDerivedStateFromProps', () => {
+  it('derives state', () => {
+    const Component = (props: { message: string }) => {
       const state = useDerivedStateFromProps(props, props => {
         return {
-          value: props.value,
+          text: props.message,
         };
       });
 
-      return <input defaultValue={state.value} />;
+      return <div>Text: {state.text}</div>;
     };
 
-    const div = document.createElement('div');
-    ReactDOM.render(<Component value="X" />, div);
-    ReactDOM.unmountComponentAtNode(div);
+    const { getByText } = render(<Component message="derived state" />);
+    expect(getByText(/Text:/)).toHaveTextContent('derived state');
   });
 });
 
 describe('useRenderProps', () => {
-  it('renders without crashing', () => {
+  it('forward props', () => {
     const Component = (props: { value: string }) => {
       const renderProps = useRenderProps(props);
 
       return renderProps(props => {
-        return <input defaultValue={props.value} />;
+        return (
+          <form>
+            <label htmlFor="renderProps">Render Props</label>
+            <input id="renderProps" defaultValue={props.value} />
+          </form>
+        );
       });
     };
 
-    const div = document.createElement('div');
-    ReactDOM.render(<Component value="X" />, div);
-    ReactDOM.unmountComponentAtNode(div);
+    const { getByLabelText } = render(<Component value="render value" />);
+    const input = getByLabelText('Render Props') as HTMLInputElement;
+    expect(input.value).toEqual('render value');
   });
 });
 
 describe('useGlobalContext', () => {
+  beforeAll(() => {
+    jest.spyOn(console, 'log').mockImplementation(() => void 0);
+  });
+
+  afterAll(() => {
+    // @ts-ignore
+    console.log.mockRestore();
+  });
+
   it('renders without crashing', () => {
     const Component = () => {
-      const global = useGlobalContext();
-      global.console.log('It works!');
+      const {
+        console: { log },
+      } = useGlobalContext();
+      React.useEffect(() => {
+        log('It works!');
+      }, []);
       return null;
     };
 
-    const div = document.createElement('div');
-    ReactDOM.render(<Component />, div);
-    ReactDOM.unmountComponentAtNode(div);
+    render(<Component />);
+
+    expect(console.log).toHaveBeenCalledTimes(1);
+    expect(console.log).toHaveBeenCalledWith('It works!');
   });
 });
 
