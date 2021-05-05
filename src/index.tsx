@@ -54,7 +54,7 @@ export function useConstructor<S = any>(
   React.useDebugValue('useConstructor');
 
   const [state, setState] = React.useState({} as S);
-  const [isConstructed, setConstructed] = React.useState(false);
+  const isConstructed = React.useRef<boolean>();
   const classInstance = new Proxy(
     {},
     {
@@ -67,9 +67,9 @@ export function useConstructor<S = any>(
     }
   );
 
-  if (!isConstructed) {
+  if (!isConstructed.current) {
     constructorFn.call(classInstance);
-    setConstructed(true);
+    isConstructed.current = true;
   }
 
   return {
