@@ -1,6 +1,6 @@
 {
   "name": "@pveyes/use-less",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "repository": "git@github.com:pveyes/use-less.git",
   "main": "dist/index.js",
   "umd:main": "dist/use-less.umd.production.js",
