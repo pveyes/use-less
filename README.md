@@ -134,8 +134,7 @@ function Component(props) {
   return null;
 }
 ```
-
-
+### useComponentRef
 A hook that returns a ref to the component and the instantiated JSX.Element. It accepts one parameter, a function that returns an instantiated JSX.Element and is passed the ref.
 
 ```jsx
