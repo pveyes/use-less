@@ -135,6 +135,16 @@ function Component(props) {
 }
 ```
 
+
+A hook that returns a ref to the component and the instantiated JSX.Element. It accepts one parameter, a function that returns an instantiated JSX.Element and is passed the ref.
+
+```jsx
+const [view, ref] = useComponentRef<View>(((ref) =>
+		<View ref={ref} style={{ backgroundColor: 'black', zIndex: 10000, width: '100%', height: '100%' }} />
+))
+return <>{view}</>;
+```
+
 ## FAQ
 
 - **Does it work with concurrent mode**
